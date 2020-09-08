@@ -1,4 +1,4 @@
 services: docker
 script:
-  - docker build -t formalLanguageTheory .
-  - docker run formalLanguageTheory
+  - docker build -t formal_language_theory .
+  - docker run formal_language_theory
