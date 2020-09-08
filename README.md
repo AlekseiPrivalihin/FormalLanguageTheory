@@ -1,5 +1,7 @@
 # FormalLanguageTheory
 Practical assignments for the formal language theory course at SPBU
+PR build results avaliable at 
+[![Build Status](https://travis-ci.org/github/AlekseiPrivalihin/FormalLanguageTheory/pull_requests)]
 Only Docker and git are required to run the tests
  - First, clone this repo by running
    `git clone https://github.com/AlekseiPrivalihin/FormalLanguageTheory.git`
