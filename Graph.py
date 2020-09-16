@@ -14,13 +14,16 @@ class Graph:
         input_file = open(filename)
         edges = input_file.read().rstrip().split('\n')
         input_file.close()
-        max_vertice_number = 0
+        edges = list(filter(lambda x: len(x) != 0, edges))
+        max_vertice_number = -1
         for edge in edges:
             fro, label, to = edge.split(' ')
             max_vertice_number = max(max_vertice_number, int(fro))
             max_vertice_number = max(max_vertice_number, int(to))            
 
         self.n_vertices = max_vertice_number + 1
+        self.start_vertices = self.get_set_from_file(None)
+        self.terminal_vertices = self.get_set_from_file(None)
         for edge in edges:
             fro, label, to = edge.split(' ')
             self.get_by_label(label)[int(fro), int(to)] = True
@@ -49,7 +52,7 @@ class Graph:
         states = [State(i) for i in range(self.n_vertices)]
         for i in self.start_vertices:
             dfa.add_start_state(states[i])
-
+            
         for i in self.terminal_vertices:
             dfa.add_final_state(states[i])
 
@@ -69,7 +72,10 @@ class Graph:
             adj_matrix = adj_matrix | label_matrix
 
         for k in range(self.n_vertices):
-            adj_matrix += adj_matrix @ adj_matrix
+            old_nvals = adj_matrix.nvals
+            adj_matrix = adj_matrix | (adj_matrix @ adj_matrix)
+            if adj_matrix.nvals == old_nvals:
+                break
 
         return adj_matrix
 
@@ -86,11 +92,11 @@ class Graph:
         result.n_vertices = self.n_vertices * graph.n_vertices
         for i in self.start_vertices:
             for j in graph.start_vertices:
-                result.start_vertices.add(i * self.n_vertices + j)
+                result.start_vertices.add(i * graph.n_vertices + j)
 
         for i in self.terminal_vertices:
             for j in graph.terminal_vertices:
-                result.terminal_vertices.add(i * self.n_vertices + j)
+                result.terminal_vertices.add(i * graph.n_vertices + j)
         
         for label in self.labels() | graph.labels():
             result.label_matrices[label] = self.get_by_label(label).kronecker(graph.get_by_label(label))
@@ -101,23 +107,16 @@ class Graph:
         for label in self.labels():
             print(label, self.get_by_label(label).nvals)
 
-    def print_reachable(self, fro_fname, to_fname):
-        fro = set()
-        if fro_fname != None:
-            fro_file = open(fro_fname)
-            fro = set(map(int, fro_file.readline().rstrip().split()))
-            fro_file.close()
+    def get_set_from_file(self, filename):
+        if filename != None:
+            with open(filename) as input_file:
+                return set(map(int, input_file.readline().rstrip().split()))
         else:
-            fro = set([i for i in range(self.n_vertices)])
-            
-        to = set()
-        if to_fname != None:
-            to_file = open(to_fname)
-            to = set(map(int, to_file.readline().rstrip().split()))
-            to_file.close()
-        else:
-            to = set([i for i in range(self.n_vertices)])
+            return set([i for i in range(self.n_vertices)])
 
+    def print_reachable(self, fro_fname, to_fname):
+        fro = self.get_set_from_file(fro_fname)
+        to = self.get_set_from_file(to_fname)
         reachability_matrix = self.transitive_closure()
         for i, j, _ in zip(*reachability_matrix.to_lists()):
             if (i in fro) and (j in to):
