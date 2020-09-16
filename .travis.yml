@@ -1,4 +1,4 @@
 services: docker
 script:
-  - docker build -t formal_language_theory .
+  - docker build --build-arg graph="input.txt" --build-arg regex="regex_input.txt" --build-arg initial="initial.txt" -t formal_language_theory .
   - docker run formal_language_theory
