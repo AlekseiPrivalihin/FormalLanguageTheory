@@ -41,7 +41,6 @@ def test_transitive_closure_square():
         [True, True, True, True, True, True, True, True]
     )
 
-    print(reachability_matrix.to_lists())
     assert expected.iseq(reachability_matrix)
 
 def test_transitive_closure_mul():
@@ -54,7 +53,6 @@ def test_transitive_closure_mul():
         [True, True, True, True, True, True, True, True]
     )
 
-    print(reachability_matrix.to_lists())
     assert expected.iseq(reachability_matrix)
 
 def test_intersect():

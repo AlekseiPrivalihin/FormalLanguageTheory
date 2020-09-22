@@ -37,8 +37,10 @@ if __name__ == '__main__':
     print(f"It took {time.process_time() - current_t_sec} sec to read the graph", flush=True)
     
     regex_fnames = [args.regex]
+    prefix = ''
     if args.regex == 'ALL':
         regex_fnames = os.listdir('regexes')
+        prefix = 'regexes/'
 
     n_regexes = len(regex_fnames)
     cum_time_mul_sec = 0
@@ -53,7 +55,7 @@ if __name__ == '__main__':
     for regex_fname in regex_fnames:
         
         g2 = Graph()
-        g2.from_regex(f'regexes/{regex_fname}')
+        g2.from_regex(f'{prefix}{regex_fname}')
         
         current_t_sec = time.process_time()
         g_intersection = g1.intersect(g2)
