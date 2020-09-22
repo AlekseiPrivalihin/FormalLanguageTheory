@@ -66,18 +66,32 @@ class Graph:
     
         
         
-    def transitive_closure(self):
+    def transitive_closure_square(self):
         adj_matrix = Matrix.sparse(BOOL, self.n_vertices, self.n_vertices)
         for label_matrix in self.label_matrices.values():
-            adj_matrix = adj_matrix | label_matrix
+            adj_matrix = adj_matrix + label_matrix
 
         for k in range(self.n_vertices):
             old_nvals = adj_matrix.nvals
-            adj_matrix = adj_matrix | (adj_matrix @ adj_matrix)
+            adj_matrix = adj_matrix + (adj_matrix @ adj_matrix)
             if adj_matrix.nvals == old_nvals:
                 break
 
         return adj_matrix
+
+    def transitive_closure_mul(self):
+        adj_matrix = Matrix.sparse(BOOL, self.n_vertices, self.n_vertices)
+        for label_matrix in self.label_matrices.values():
+            adj_matrix = adj_matrix + label_matrix
+
+        result = adj_matrix.dup()
+        for k in range(self.n_vertices):
+            old_nvals = result.nvals
+            result = result + (result @ adj_matrix)
+            if result.nvals == old_nvals:
+                break
+
+        return result
 
     def labels(self):
         return self.label_matrices.keys()
@@ -114,11 +128,10 @@ class Graph:
         else:
             return set([i for i in range(self.n_vertices)])
 
-    def print_reachable(self, fro_fname, to_fname):
+    def print_reachable(self, trans_closure, fro_fname, to_fname):
         fro = self.get_set_from_file(fro_fname)
         to = self.get_set_from_file(to_fname)
-        reachability_matrix = self.transitive_closure()
-        for i, j, _ in zip(*reachability_matrix.to_lists()):
+        for i, j, _ in zip(*trans_closure.to_lists()):
             if (i in fro) and (j in to):
                 print(f'{j} reachable from {i}')
                 

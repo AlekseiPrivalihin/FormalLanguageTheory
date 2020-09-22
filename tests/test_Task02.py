@@ -31,16 +31,30 @@ def test_from_regex():
     assert not dfa.accepts('ab')
     assert not dfa.accepts('c')
 
-def test_transitive_closure():
+def test_transitive_closure_square():
     g = Graph()
     g.from_file("input3.txt")
-    reachability_matrix = g.transitive_closure()
+    reachability_matrix = g.transitive_closure_square()
     expected = Matrix.from_lists(
         [0, 0, 1, 3, 3, 3, 4, 4],
         [1, 2, 2, 1, 2, 4, 1, 2],
         [True, True, True, True, True, True, True, True]
     )
 
+    print(reachability_matrix.to_lists())
+    assert expected.iseq(reachability_matrix)
+
+def test_transitive_closure_mul():
+    g = Graph()
+    g.from_file("input3.txt")
+    reachability_matrix = g.transitive_closure_mul()
+    expected = Matrix.from_lists(
+        [0, 0, 1, 3, 3, 3, 4, 4],
+        [1, 2, 2, 1, 2, 4, 1, 2],
+        [True, True, True, True, True, True, True, True]
+    )
+
+    print(reachability_matrix.to_lists())
     assert expected.iseq(reachability_matrix)
 
 def test_intersect():

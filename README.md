@@ -10,3 +10,6 @@
   - All files must be within repo folder or its subfolders!
   - Lastly, run the image using
     `docker run formal_language_theory`
+  - To run multiple queries on a single graph, copy all regex files into <repo_dir>/regexes and use --build-arg regex='ALL' when building the Docker image
+  - To reduce excessive output it is also recommended to use an empty text file as --build-arg initial
+  - The output now contains information about time spent on different tasks
