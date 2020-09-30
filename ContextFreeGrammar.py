@@ -96,6 +96,7 @@ class ChomskyNormalForm(CFG):
                         ans.add((fro, to))
                         
                     cur_edges_by_end[to].add((var, fro))
+                    cur_edges_by_start[fro].add((var, to))
                     q.append((var, fro, to))
 
         if self.generates_eps:
