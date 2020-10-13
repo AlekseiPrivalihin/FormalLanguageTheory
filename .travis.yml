@@ -1,4 +1,4 @@
 services: docker
 script:
-  - docker build --build-arg graph="input.txt" --build-arg regex="regex_input.txt" --build-arg initial="initial.txt" -t formal_language_theory .
-  - docker run formal_language_theory
+  - docker build -t flt --build-arg graph="input4.txt" --build-arg cfg="cfg_input.txt" --build-arg string="string_input.txt" .
+  - docker run flt
