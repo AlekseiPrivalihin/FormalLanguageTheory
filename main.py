@@ -31,3 +31,5 @@ if __name__ == '__main__':
         s = input_file.readline().rstrip()
     print(cfg.CYK(s))
     print(cfg.Hellings(g))
+    print(cfg.Asimov(g))
+    print(cfg.Tenzor(g))
