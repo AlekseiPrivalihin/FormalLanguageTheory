@@ -10,3 +10,4 @@
   - All files must be within repo folder or its subfolders!
   - Lastly, run the image using
     `docker run formal_language_theory`
+  - The first line of output is the result of CYK for given grammar and string, the next three lines are results of Hellings, Asimov and Tenzor algorithms for given grammar and graph
