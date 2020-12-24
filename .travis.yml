@@ -1,4 +1,4 @@
 services: docker
 script:
-  - docker build -t flt --build-arg graph="input4.txt" --build-arg cfg="cfg_input.txt" --build-arg string="string_input.txt" .
+  - docker build -t flt --build-arg regex="regex_input.txt" --build-arg string="string_input_1.txt" .
   - docker run flt
