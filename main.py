@@ -1,5 +1,6 @@
 import argparse
-import DifferentiableRegex
+from DifferentiableRegex import DifferentiableRegex
+from pyformlang.regular_expression import Regex
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='command line interface for simple graph/dfa operations')
@@ -18,7 +19,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     with open(args.regex) as regex_file:
-        regex = DifferentiableRegex(regex_file.readline().rstrip())
+        regex = DifferentiableRegex(Regex(regex_file.readline().rstrip()))
     
     with open(args.string) as input_file:
         s = input_file.readline().rstrip()

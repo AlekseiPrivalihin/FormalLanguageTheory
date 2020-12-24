@@ -2,9 +2,12 @@ from pyformlang.regular_expression import Regex
 from pyformlang.regular_expression.regex_objects import Union, Symbol, Concatenation, Epsilon, Empty, KleeneStar, Operator
 import copy
 
-class DifferentiableRegex(regex):
-    def __init__(self, raw_regex = ''):
-        super().__init__(raw_regex)
+class DifferentiableRegex:
+    def __init__(self, regex):
+        self.head = regex.head
+        self.sons = []
+        for son in regex.sons:
+            self.sons.append(DifferentiableRegex(son))
         self.nullable = None
         self.is_nullable()
 
@@ -13,7 +16,7 @@ class DifferentiableRegex(regex):
         if self.nullable != None and not reset:
             return self.nullable
         
-        if type(self.head) == Epsilon || type(self.head) == KleeneStar:
+        if type(self.head) == Epsilon or type(self.head) == KleeneStar:
             self.nullable = True
         elif type(self.head) == Union:
             self.nullable = self.sons[0].is_nullable() or self.sons[1].is_nullable()
@@ -30,14 +33,14 @@ class DifferentiableRegex(regex):
             self.sons = [copy.deepcopy(self), other]
         else:
             self.sons = [other, copy.deepcopy(self)]
-        result.head = Concatenation()
+        self.head = Concatenation()
         self.is_nullable(True)
 
 
     def differentiate(self, symbol):
         if type(self.head) == Union:
-            self.sons[0].differ(symbol)
-            self.sons[1].differ(symbol)
+            self.sons[0].differentiate(symbol)
+            self.sons[1].differentiate(symbol)
         elif type(self.head) == Concatenation:
             if self.sons[0].is_nullable():
                 copy_right_son = copy.deepcopy(self.sons[1])
@@ -50,7 +53,8 @@ class DifferentiableRegex(regex):
                 
         elif type(self.head) == KleeneStar:
             regex1 = copy.deepcopy(self.sons[0])
-            self.concat_with(differ(regex1, symbol), False)
+            regex1.differentiate(symbol)
+            self.concat_with(regex1, False)
         else:
             if(self.head.value == symbol):
                 self.head = Epsilon()
@@ -59,10 +63,21 @@ class DifferentiableRegex(regex):
         
         self.is_nullable(True)
 
+
+    def to_str(self):
+        result = str(self.head) + '['
+        for son in self.sons:
+            result = result + son.to_str() + '  '
+        if result[-1] != '[':
+            return result[:-2] + ']'
+        else:
+            return result + ']'
+        
+
     def accepts(self, word):
         regex = copy.deepcopy(self)
         for symbol in word:
             regex.differentiate(symbol)
-
+            
         return regex.is_nullable()
                 
