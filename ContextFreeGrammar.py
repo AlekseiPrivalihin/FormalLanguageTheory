@@ -134,10 +134,91 @@ class ChomskyNormalForm(CFG):
                             
         return list(ans)
 
-    
+    def Asimov(self, graph):
+        result = Graph()
+        n = graph.n_vertices
+        result.n_vertices = n
+        for (label, label_matrix) in graph.label_matrices.items():
+            [fros, tos, _] = label_matrix.to_lists()
+            for i in range(len(fros)):
+                fro = fros[i]
+                to = tos[i]
+                variables = self.heads_for_body.get(Terminal(label), set())
+                for var in variables:
+                    result.get_by_label(var.value)[fro, to] = True
 
-        
+        if self.generates_eps:
+            for i in range(n):
+                result.get_by_label(self.start_symbol.value)[i, i] = True
+
+        changes = True
+        while changes:
+            changes = False
+            for production in self.productions:
+                if len(production.body) == 2:
+                    prev = result.get_by_label(production.head.value).nvals
+                    mat = result.get_by_label(production.head.value)
+                    toAdd = result.get_by_label(production.body[0].value) @ result.get_by_label(production.body[1].value)
+                    if toAdd.nvals != 0:
+                        mat += toAdd
+                    if prev != result.get_by_label(production.head.value).nvals:
+                        changes = True
+
+        return list(zip(*result.get_by_label(self.start_symbol).to_lists()[:2]))
+
+    def Tenzor(self, graph):
+        (RA, heads) = self.to_recursive_automaton()
+        result = Graph()
+        result.n_vertices = graph.n_vertices
+        for label in graph.labels():
+            mat = result.get_by_label(label)
+            mat += graph.get_by_label(label)
+            
+        result.start_vertices = graph.start_vertices
+        result.terminal_vertices = graph.terminal_vertices
+
+        result.get_by_label(self.start_symbol.value)
+        if self.generate_epsilon():
+            for i in range(graph.n_vertices):
+                result.get_by_label(self.start_symbol)[i, i] = True
                 
+        intersection = result.intersect(RA)
+        transitive_closure = intersection.transitive_closure()
+        n = intersection.n_vertices
+        changes = True
+        while changes:
+            prev = transitive_closure.nvals
+            for i in range(n):
+                for j in range(n):
+                    if (i, j) in transitive_closure:
+                        fro = i % RA.n_vertices
+                        to = j % RA.n_vertices
+                        if (fro in RA.start_vertices) and (to in RA.terminal_vertices):
+                            fro_graph = i // RA.n_vertices
+                            to_graph = j // RA.n_vertices
+                            result.get_by_label(heads[fro, to])[fro_graph, to_graph] = True
+                            
+            intersection = result.intersect(RA)
+            transitive_closure = intersection.transitive_closure()
+            if transitive_closure.nvals == prev:
+                changes = False
+                
+        return list(zip(*result.get_by_label(self.start_symbol).to_lists()[:2]))
 
-        
+
+    def to_recursive_automaton(self):
+        RA = Graph()
+        heads = {}
+        RA.n_vertices = sum((len(production.body) + 1 for production in self.productions))
+        v = 0
+        for production in self.productions:
+            RA.start_vertices.add(v)
+            for i in range(len(production.body)):
+                RA.get_by_label(production.body[i].value)[v, v + 1] = True
+                v += 1
+            RA.terminal_vertices.add(v)
+            heads[v - len(production.body), v] = production.head.value
+            v += 1
+            
+        return (RA, heads)
 
