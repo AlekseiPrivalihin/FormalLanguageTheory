@@ -1,8 +1,6 @@
 FROM graphblas/pygraphblas-minimal:latest
-ARG graph
-ENV graph ${graph}
-ARG cfg
-ENV cfg ${cfg}
+ARG regex
+ENV regex ${regex}
 ARG string
 ENV string ${string}
 
@@ -11,10 +9,8 @@ WORKDIR /formalLanguageTheory
 COPY . /formalLanguageTheory
 
 RUN pip3 install -r requirements.txt
-RUN echo $graph
 RUN echo $regex
-RUN echo $initial
-RUN echo $destination
+RUN echo $string
 RUN python3 -m pytest -v -s
-CMD python3 main.py --graph $graph --cfg $cfg --string $string
+CMD python3 main.py --regex $regex --string $string
 

@@ -1,17 +1,11 @@
-from Graph import Graph
 import argparse
-from ContextFreeGrammar import ChomskyNormalForm as CNF
+from DifferentiableRegex import DifferentiableRegex
+from pyformlang.regular_expression import Regex
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='command line interface for simple graph/dfa operations')
     parser.add_argument(
-        '--graph'
-        , required=True
-        , type=str
-        , help='path to the graph file'
-    )
-    parser.add_argument(
-        '--cfg'
+        '--regex'
         , required=True
         , type=str
         , help='path to the regular expression file'
@@ -20,16 +14,14 @@ if __name__ == '__main__':
         '--string'
         , required=True
         , type=str
-        , help='path to the file containing string for CYK'
+        , help='path to the file containing string for acceptance check'
     )
     args = parser.parse_args()
 
-    g = Graph()
-    g.from_file(args.graph)
-    cfg = CNF.from_file(args.cfg)
+    with open(args.regex) as regex_file:
+        regex = DifferentiableRegex(Regex(regex_file.readline().rstrip()))
+    
     with open(args.string) as input_file:
         s = input_file.readline().rstrip()
-    print(cfg.CYK(s))
-    print(cfg.Hellings(g))
-    print(cfg.Asimov(g))
-    print(cfg.Tenzor(g))
+    
+    print(regex.accepts(s))
