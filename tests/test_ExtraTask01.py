@@ -25,6 +25,7 @@ def test_default_regex():
         regex = DifferentiableRegex(Regex("a * | a * b"))
         assert(regex.accepts(word)) 
 
+
 def test_comp_regex():
     regex = DifferentiableRegex(Regex('(a * b | c) * d'))
     correct = ['cd', 'aaabd', 'aabcd', 'abbd']
@@ -34,6 +35,7 @@ def test_comp_regex():
 
     for word in incorrect:
         assert(not regex.accepts(word))
+
 
 def test_comp_regex_redundant():
     regexes = ['a *', 'a | a * | a | a *', 'a * * * * *', '(a | ) *']
