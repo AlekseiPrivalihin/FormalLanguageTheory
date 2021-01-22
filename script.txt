@@ -1,0 +1,2 @@
+connect to "/usr/local/mydb";
+select count edges from graph "graph" intersect with query "a|b*(abc)+d?" intersect with graph "other_graph";

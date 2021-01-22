@@ -1,16 +1,13 @@
 FROM graphblas/pygraphblas-minimal:latest
-ARG regex
-ENV regex ${regex}
-ARG string
-ENV string ${string}
+ARG script
+ENV script ${script}
 
 RUN mkdir /formalLanguageTheory
 WORKDIR /formalLanguageTheory
 COPY . /formalLanguageTheory
 
 RUN pip3 install -r requirements.txt
-RUN echo $regex
-RUN echo $string
+RUN echo $script
 RUN python3 -m pytest -v -s
-CMD python3 main.py --regex $regex --string $string
+CMD python3 main.py --script $script
 

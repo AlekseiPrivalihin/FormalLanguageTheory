@@ -1,27 +1,22 @@
 import argparse
-from DifferentiableRegex import DifferentiableRegex
-from pyformlang.regular_expression import Regex
+from ContextFreeGrammar import ChomskyNormalForm as CNF
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='command line interface for simple graph/dfa operations')
     parser.add_argument(
-        '--regex'
+        '--script'
         , required=True
         , type=str
-        , help='path to the regular expression file'
+        , help='path to the script file'
     )
-    parser.add_argument(
-        '--string'
-        , required=True
-        , type=str
-        , help='path to the file containing string for acceptance check'
-    )
+
     args = parser.parse_args()
 
-    with open(args.regex) as regex_file:
-        regex = DifferentiableRegex(Regex(regex_file.readline().rstrip()))
+    grammar_file = 'Grammar.txt'
+    parser = CNF.from_file(grammar_file, 'Script')
     
-    with open(args.string) as input_file:
-        s = input_file.readline().rstrip()
+    with open(args.script) as input_file:
+        script = input_file.read().rstrip()
     
-    print(regex.accepts(s))
+    print(parser.CYK("".join(script.replace('#', '@').replace('|', '#').split())))
+

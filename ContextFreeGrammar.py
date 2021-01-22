@@ -42,15 +42,14 @@ class ChomskyNormalForm(CFG):
             self.heads_for_body[body] = self.heads_for_body.get(body, set()) | {production.head}
 
     @classmethod
-    def from_file(self, path):
+    def from_file(self, path, start_symbol='S'):
         productions = []
         with open(path, 'r') as input_file:
             for line in input_file:
                 production = line.split()
                 productions.append(production[0] + ' -> ' + ' '.join(production[1:]))
 
-        cfg = CFG.from_text('\n'.join(productions))
-
+        cfg = CFG.from_text('\n'.join(productions), start_symbol)
         return ChomskyNormalForm(
             variables=cfg.variables,
             terminals=cfg.terminals,

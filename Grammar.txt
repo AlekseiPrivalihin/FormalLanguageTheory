@@ -1,0 +1,31 @@
+Script Statement ; Script
+Script 
+Statement Select ObjExpr From GraphExpr
+Statement Connect To " String "
+GraphExpr GraphExpr Intersect With GraphExpr
+GraphExpr Graph " String "
+GraphExpr Query " Pattern "
+ObjExpr Edges
+ObjExpr Count ObjExpr
+Pattern Pattern # Pattern1
+Pattern Pattern1
+Pattern1 Pattern1 Pattern2
+Pattern1 Pattern2
+Pattern2 Pattern2 *
+Pattern2 Pattern2 +
+Pattern2 Pattern2 ?
+Pattern2 ( Pattern )
+Pattern2 String
+String Symbol String
+String 
+Connect c o n n e c t
+To t o
+Select s e l e c t
+From f r o m
+Intersect i n t e r s e c t
+With w i t h
+Graph g r a p h
+Query q u e r y
+Edges e d g e s
+Count c o u n t
+Symbol a | b | c | d | e | f | g | h | i | j | k | l | m | n | o | p | q | r | s | t | u | v | w | x | y | z | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | / | . | _
