@@ -21,10 +21,10 @@
     - select <objective> from <graph>
   - Objective can be specified as 'edges' or 'count edges'
   - Graph can be specified via its name: 
-    select edges from graph "<graph_name>"
+    - select edges from graph "<graph_name>"
   - Or as a pattern (regex) query:
-    select count edges from query "<pattern>"
+    - select count edges from query "<pattern>"
   - Or as an intersection of graphs:
-    select edges from graph "graph" intersect with "other_graph"
-  - Patterns support brackets, Kleene star (*), alternatives (|), concatenation, optional characters (?) and the + operator (one or more entries)
+    - select edges from graph "graph" intersect with "other_graph"
+  - Patterns support brackets, Kleene star (\*), alternatives (|), concatenation, optional characters (?) and the + operator (one or more entries)
     For example: a|b*(abc)+d?
