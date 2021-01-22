@@ -70,11 +70,11 @@ class Graph:
         adj_matrix = Matrix.sparse(BOOL, self.n_vertices, self.n_vertices)
         for label_matrix in self.label_matrices.values():
             if label_matrix.nvals != 0:
-                adj_matrix = adj_matrix | label_matrix
+                adj_matrix = adj_matrix + label_matrix
 
         for k in range(self.n_vertices):
             old_nvals = adj_matrix.nvals
-            adj_matrix = adj_matrix | (adj_matrix @ adj_matrix)
+            adj_matrix = adj_matrix + (adj_matrix @ adj_matrix)
             if adj_matrix.nvals == old_nvals:
                 break
 
